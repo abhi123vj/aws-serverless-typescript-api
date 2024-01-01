@@ -1,0 +1,67 @@
+service: 'aws-serverless-typescript-api'
+  
+frameworkVersion: '3'
+
+plugins: 
+    # - serverless-plugin-typescript
+    - serverless-esbuild
+    - serverless-offline
+
+provider:
+    name: aws
+    runtime: nodejs18.x
+    stage: ${opt:stage, self:custom.defaultStage}
+    region: ${opt:region, self:custom.defaultRegion}
+    environment:
+        CURRENT_AWS_REGION: ${self:provider.region}
+        LICENCE_TABLE: 'tbl_licence_key'
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+            - dynamodb:Query
+            - dynamodb:GetItem
+            - dynamodb:BatchGetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+        Resource:
+            - arn:aws:dynamodb:*:*:table/${self:provider.environment.LICENCE_TABLE}
+functions:
+    fetchLicenseKey:
+        handler: src/handlers/GetLicenseKey.handler
+        timeout: 900
+        events:
+            - http:
+                  path: v1/license-Key/{key}
+                  method: get
+    fetchBundle:
+        handler: src/handlers/GetBundle.handler
+        timeout: 900
+        events:
+            - http:
+                  path: v1/resource/{resource}
+                  method: get
+    resetLicenseKey:
+        handler: src/handlers/ResetLicenseKey.handler
+        timeout: 900
+        events:
+            - http:
+                  path: v1/license-Key/{key}/reset
+                  method: get
+    activateLicenseKey:
+        handler: src/handlers/ActivateLicenseKey.handler
+        timeout: 900
+        events: 
+            - http:
+                  path: v1/license-Key/{key}/activate
+                  method: post
+    expiryLicenseKey:
+        handler: src/handlers/ExpiryLicenseKey.handler
+        timeout: 900
+        events: 
+            - http:
+                  path: v1/license-Key/{key}/is-expired
+                  method: post
+custom:
+  defaultRegion: ap-south-1
+  defaultStage: dev
+
