@@ -5,6 +5,7 @@ frameworkVersion: '3'
 plugins: 
     # - serverless-plugin-typescript
     - serverless-add-api-key
+    # - serverless-domain-manager
     - serverless-esbuild
     - serverless-offline
 
@@ -26,57 +27,52 @@ provider:
             - dynamodb:UpdateItem
         Resource:
             - arn:aws:dynamodb:*:*:table/${self:provider.environment.LICENCE_TABLE}
-    apiGateway:
-        apiKeys:
-            - value: myFourthKeyValue
-              description: Api key for magicpearls 2.0  # Optional
+
 
 functions:
     fetchLicenseKey:
         handler: src/handlers/GetLicenseKey.handler
-        timeout: 900
         events:
             - http:
-                  path: v1/license-Key/{key}
+                  path: v2/license-key-service/{key}
                   method: get
                   private: true 
     fetchBundle:
         handler: src/handlers/GetBundle.handler
-        timeout: 900
         events:
             - http:
-                  path: v1/resource/{resource}
+                  path: resource/{resource}
                   method: get
                   private: true 
     resetLicenseKey:
         handler: src/handlers/ResetLicenseKey.handler
-        timeout: 900
         events:
             - http:
-                  path: v1/license-Key/{key}/reset
+                  path: v2/license-key-service/{key}/reset
                   method: get
                   private: true 
     activateLicenseKey:
         handler: src/handlers/ActivateLicenseKey.handler
-        timeout: 900
         events: 
             - http:
-                  path: v1/license-Key/{key}/activate
+                  path: v2/license-key-service/{key}/activate
                   method: post
                   private: true 
     expiryLicenseKey:
         handler: src/handlers/ExpiryLicenseKey.handler
-        timeout: 900
         events: 
             - http:
-                  path: v1/license-Key/{key}/is-expired
+                  path: v2/license-key-service/{key}/is-expired
                   method: post
                   private: true 
                   
 custom:
-  defaultRegion: ap-south-1
-  defaultStage: dev
+    defaultRegion: ap-south-1
+    defaultStage: dev
 
-  apiKeys:
-    prod:
-      - name: magicpearls-v2-api-key 
+    # customDomain:
+    #     domainName: 'api.magicpearls.in'
+    #     stage: ${self:provider.stage}
+    #     createRoute53Record: true
+    apiKeys:
+        - name: magicpearls-v2-api-key 
