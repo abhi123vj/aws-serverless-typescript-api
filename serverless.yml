@@ -76,3 +76,6 @@ custom:
   defaultRegion: ap-south-1
   defaultStage: dev
 
+  apiKeys:
+    prod:
+      - name: magicpearls-v2-api-key 
