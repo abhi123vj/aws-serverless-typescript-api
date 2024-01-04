@@ -1,9 +1,10 @@
-service: 'aws-serverless-typescript-api'
+service: 'magicpearls-v2-apis'
   
 frameworkVersion: '3'
 
 plugins: 
     # - serverless-plugin-typescript
+    - serverless-add-api-key
     - serverless-esbuild
     - serverless-offline
 
@@ -25,6 +26,11 @@ provider:
             - dynamodb:UpdateItem
         Resource:
             - arn:aws:dynamodb:*:*:table/${self:provider.environment.LICENCE_TABLE}
+    apiGateway:
+        apiKeys:
+            - value: myFourthKeyValue
+              description: Api key for magicpearls 2.0  # Optional
+
 functions:
     fetchLicenseKey:
         handler: src/handlers/GetLicenseKey.handler
@@ -33,6 +39,7 @@ functions:
             - http:
                   path: v1/license-Key/{key}
                   method: get
+                  private: true 
     fetchBundle:
         handler: src/handlers/GetBundle.handler
         timeout: 900
@@ -40,6 +47,7 @@ functions:
             - http:
                   path: v1/resource/{resource}
                   method: get
+                  private: true 
     resetLicenseKey:
         handler: src/handlers/ResetLicenseKey.handler
         timeout: 900
@@ -47,6 +55,7 @@ functions:
             - http:
                   path: v1/license-Key/{key}/reset
                   method: get
+                  private: true 
     activateLicenseKey:
         handler: src/handlers/ActivateLicenseKey.handler
         timeout: 900
@@ -54,6 +63,7 @@ functions:
             - http:
                   path: v1/license-Key/{key}/activate
                   method: post
+                  private: true 
     expiryLicenseKey:
         handler: src/handlers/ExpiryLicenseKey.handler
         timeout: 900
@@ -61,7 +71,12 @@ functions:
             - http:
                   path: v1/license-Key/{key}/is-expired
                   method: post
+                  private: true 
+                  
 custom:
   defaultRegion: ap-south-1
   defaultStage: dev
 
+  apiKeys:
+    prod:
+      - name: magicpearls-v2-api-key 
