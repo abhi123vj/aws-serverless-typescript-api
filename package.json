@@ -6,7 +6,8 @@
   "scripts": {
     "offline:mac": "export AWS_PROFILE=magicpearls && sls offline start --config serverless.yml",
     "offline:win": "set AWS_PROFILE=magicpearls&& serverless offline start --config serverless.yml",
-    "deploy": "AWS_PROFILE=magicpearls serverless deploy --config serverless.yml"
+    "sls:deploy": "AWS_PROFILE=magicpearls serverless deploy --config serverless.yml",
+    "sls:remove": "AWS_PROFILE=magicpearls serverless remove --config serverless.yml"
   },
   "engines": {
     "node": ">=14.15.0"
@@ -27,7 +28,7 @@
     "@types/node": "^20.10.6",
     "esbuild": "^0.19.11",
     "json-schema-to-ts": "^3.0.0",
-    "serverless": "^3.0.0",
+    "serverless": "^3.38.0",
     "serverless-add-api-key": "^4.2.1",
     "serverless-domain-manager": "^7.3.3",
     "serverless-esbuild": "^1.23.3",

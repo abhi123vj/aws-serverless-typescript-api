@@ -5,7 +5,7 @@ frameworkVersion: '3'
 plugins: 
     # - serverless-plugin-typescript
     - serverless-add-api-key
-    # - serverless-domain-manager
+    - serverless-domain-manager
     - serverless-esbuild
     - serverless-offline
 
@@ -34,7 +34,7 @@ functions:
         handler: src/handlers/GetLicenseKey.handler
         events:
             - http:
-                  path: v2/license-key-service/{key}
+                  path: license-key-service/{key}
                   method: get
                   private: true 
     fetchBundle:
@@ -48,21 +48,21 @@ functions:
         handler: src/handlers/ResetLicenseKey.handler
         events:
             - http:
-                  path: v2/license-key-service/{key}/reset
+                  path: license-key-service/{key}/reset
                   method: get
                   private: true 
     activateLicenseKey:
         handler: src/handlers/ActivateLicenseKey.handler
         events: 
             - http:
-                  path: v2/license-key-service/{key}/activate
+                  path: license-key-service/{key}/activate
                   method: post
                   private: true 
     expiryLicenseKey:
         handler: src/handlers/ExpiryLicenseKey.handler
         events: 
             - http:
-                  path: v2/license-key-service/{key}/is-expired
+                  path: license-key-service/{key}/is-expired
                   method: post
                   private: true 
                   
@@ -70,9 +70,10 @@ custom:
     defaultRegion: ap-south-1
     defaultStage: dev
 
-    # customDomain:
-    #     domainName: 'api.magicpearls.in'
-    #     stage: ${self:provider.stage}
-    #     createRoute53Record: true
+    customDomain:
+        domainName: 'api.magicpearls.in'
+        basePath: v2
+        stage: ${self:provider.stage}
+        createRoute53Record: true
     apiKeys:
         - name: magicpearls-v2-api-key 
